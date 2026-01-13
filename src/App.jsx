@@ -93,6 +93,11 @@ function App() {
     setUrlState(cat, null)
   }, [setUrlState])
 
+  const openFirstImage = useCallback(() => {
+    if (!currentImages.length) return
+    openImage(currentImages[0])
+  }, [currentImages, openImage])
+
   const enterGalleryMode = useCallback(() => {
     setGalleryMode(true)
     setUrlState(activeCategory, null)
@@ -120,6 +125,7 @@ function App() {
         galleryMode={galleryMode}
         onCategoryChange={handleCategoryChange}
         onOpenImage={openImage}
+        onOpenFirst={openFirstImage}
         onEnterGalleryMode={enterGalleryMode}
         onExitGalleryMode={exitGalleryMode}
       />

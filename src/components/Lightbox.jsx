@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Button from './Button'
 import Modal from './Modal'
@@ -15,6 +16,12 @@ function Lightbox({
   onCopy,
   copied,
 }) {
+  const [displayImage, setDisplayImage] = useState(currentImage)
+  const [fadeState, setFadeState] = useState('idle') // idle | fading-out | fading-in
+
+  const preloadStatus = useImagePreload(currentImage?.src)
+  const isLoading = preloadStatus === 'loading'
+
   useKeyboardNavigation({
     enabled: isOpen,
     onPrev,
@@ -22,16 +29,47 @@ function Lightbox({
     onClose,
   })
 
-  const status = useImagePreload(currentImage?.src)
-  const isLoading = status === 'loading'
+  useEffect(() => {
+    if (!currentImage) return
+
+    // Primer render o misma imagen
+    if (!displayImage || displayImage.id === currentImage.id) {
+      setDisplayImage(currentImage)
+      setFadeState('idle')
+      return
+    }
+
+    // Espera a que cargue la nueva antes de swap
+    if (preloadStatus !== 'loaded') return
+
+    setFadeState('fading-out')
+    const out = setTimeout(() => {
+      setDisplayImage(currentImage)
+      setFadeState('fading-in')
+    }, 150)
+
+    const done = setTimeout(() => setFadeState('idle'), 420)
+
+    return () => {
+      clearTimeout(out)
+      clearTimeout(done)
+    }
+  }, [currentImage, displayImage, preloadStatus])
+
+  const opacityClass =
+    fadeState === 'fading-out'
+      ? 'opacity-0'
+      : fadeState === 'fading-in'
+        ? 'opacity-100 animate-fadeSwap'
+        : 'opacity-100'
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Visor de imágenes">
-      {currentImage ? (
+      {displayImage ? (
         <div className="card flex flex-col gap-4 p-4 lg:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3 text-sm font-semibold text-ink">
-              <span className="chip capitalize">{currentImage.category}</span>
+              <span className="chip capitalize">{displayImage.category}</span>
               <span className="text-muted">
                 {currentIndex + 1} / {images.length}
               </span>
@@ -47,27 +85,30 @@ function Lightbox({
           </div>
 
           <div className="relative overflow-hidden rounded-2xl bg-ink/5">
-            {isLoading ? (
-              <div className="flex h-[60vh] items-center justify-center text-muted">Cargando…</div>
-            ) : null}
-            <img
-              src={currentImage.src}
-              alt={currentImage.alt}
-              className="mx-auto h-full w-full max-h-[80vh] object-contain"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center">
+            <div className="flex h-[70vh] max-h-[80vh] items-center justify-center">
+              {isLoading ? (
+                <div className="flex h-full w-full items-center justify-center">
+                  <div className="h-16 w-16 animate-pulse rounded-full bg-ink/10" />
+                </div>
+              ) : null}
+              <img
+                key={displayImage.id}
+                src={displayImage.src}
+                alt={displayImage.alt}
+                className={`mx-auto h-full w-full max-h-[80vh] object-contain transition-opacity duration-200 ${opacityClass}`}
+              />
+            </div>
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
               <button
                 onClick={onPrev}
-                className="m-3 rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
+                className="pointer-events-auto rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
                 aria-label="Anterior"
               >
                 <ChevronLeft size={18} />
               </button>
-            </div>
-            <div className="absolute inset-y-0 right-0 flex items-center">
               <button
                 onClick={onNext}
-                className="m-3 rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
+                className="pointer-events-auto rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
                 aria-label="Siguiente"
               >
                 <ChevronRight size={18} />
