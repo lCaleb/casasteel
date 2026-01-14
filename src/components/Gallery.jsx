@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Section from './Section'
 import SectionTitle from './SectionTitle'
+import Container from './Container'
 import Button from './Button'
 
 const PreviewGrid = ({ images, onOpenImage }) => {
@@ -11,19 +12,23 @@ const PreviewGrid = ({ images, onOpenImage }) => {
     <div className="grid gap-6 lg:grid-cols-3">
       {featured ? (
         <button
-          className="group relative transform transition duration-200 lg:col-span-2 hover:scale-[1.01]"
+          className="group relative lg:col-span-2"
           onClick={() => onOpenImage(featured)}
         >
-          <div className="aspect-[16/10] overflow-hidden rounded-[24px] border border-line bg-white shadow-card transition duration-200 group-hover:-translate-y-1 group-hover:shadow-floating">
+          <div className="aspect-[16/10] overflow-hidden rounded-2xl border-2 border-line bg-white shadow-card transition-all duration-300 group-hover:-translate-y-1 group-hover:border-brand group-hover:shadow-floating">
             <img
               src={featured.src}
               alt={featured.alt}
-              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
             />
+            <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/5" />
           </div>
-          <div className="mt-3 flex items-center justify-between text-sm text-muted">
+          <div className="mt-3 flex items-center justify-between text-sm">
             <span className="font-semibold text-ink">Destacado</span>
-            <span className="text-xs uppercase tracking-[0.2em] text-field">Abrir y compartir</span>
+            <div className="flex items-center gap-2">
+              <div className="h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="text-xs uppercase tracking-[0.2em] text-field">Abrir y compartir</span>
+            </div>
           </div>
         </button>
       ) : null}
@@ -33,14 +38,15 @@ const PreviewGrid = ({ images, onOpenImage }) => {
           <button
             key={item.id}
             onClick={() => onOpenImage(item)}
-            className="group block w-full transform overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-floating"
+            className="group relative block w-full overflow-hidden rounded-2xl border-2 border-line bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-floating"
           >
             <div className="aspect-[4/3] overflow-hidden">
               <img
                 src={item.src}
                 alt={item.alt}
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
+              <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
           </button>
         ))}
@@ -55,14 +61,15 @@ const FullGrid = ({ images, onOpenImage }) => (
       <button
         key={item.id}
         onClick={() => onOpenImage(item)}
-        className="group block w-full transform overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-floating"
+        className="group relative block w-full overflow-hidden rounded-2xl border-2 border-line bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-floating"
       >
         <div className="aspect-[4/3] overflow-hidden">
           <img
             src={item.src}
             alt={item.alt}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
+          <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
       </button>
     ))}
@@ -91,7 +98,7 @@ function Gallery({
   }, [])
 
   const currentImages = imagesByCategory[activeCategory] ?? []
-  const previewImages = currentImages.slice(0, 3) // móvil: solo 3 (incluye destacado)
+  const previewImages = currentImages.slice(0, 3)
 
   const handleOpenAll = () => {
     if (isMobile) {
@@ -101,13 +108,24 @@ function Gallery({
     }
   }
 
+  // Gallery mode (solo desktop)
   if (!isMobile && galleryMode) {
     return (
       <section id="proyectos" className="bg-white py-12 lg:py-16">
-        <div className="container-app flex flex-col gap-8">
-          <div className="sticky top-16 z-10 rounded-2xl border border-line bg-white/90 px-4 py-3 shadow-card backdrop-blur">
-            <p className="text-xs uppercase tracking-[0.16em] text-field">Galería</p>
-            <p className="text-lg font-semibold text-ink">Explora todas las categorías</p>
+        <Container className="flex flex-col gap-8">
+          <div className="sticky top-16 z-10 rounded-2xl border-2 border-line bg-white/90 px-6 py-4 shadow-card backdrop-blur">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-brand" />
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-field">Galería completa</p>
+                  <p className="text-lg font-semibold text-ink">Explora todas las categorías</p>
+                </div>
+              </div>
+              <Button variant="ghost" onClick={onExitGalleryMode} className="px-4 py-2">
+                Volver
+              </Button>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -123,21 +141,16 @@ function Gallery({
               >
                 {cat}
               </button>
-          ))}
+            ))}
           </div>
 
           <FullGrid images={currentImages} onOpenImage={onOpenImage} />
-
-          <div className="pt-2">
-            <Button variant="ghost" onClick={onExitGalleryMode} className="px-6 py-3">
-              Cerrar galería
-            </Button>
-          </div>
-        </div>
+        </Container>
       </section>
     )
   }
 
+  // Vista normal (móvil y desktop sin gallery mode)
   return (
     <Section id="proyectos">
       <div className="flex flex-col gap-8">

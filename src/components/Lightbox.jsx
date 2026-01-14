@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Button from './Button'
 import Modal from './Modal'
@@ -16,8 +16,11 @@ function Lightbox({
   onCopy,
   copied,
 }) {
+  // DECLARAR displayImage PRIMERO
   const [displayImage, setDisplayImage] = useState(currentImage)
-  const [fadeState, setFadeState] = useState('idle') // idle | fading-out | fading-in
+  const [slideDirection, setSlideDirection] = useState(null)
+  const containerRef = useRef(null)
+  const imageRef = useRef(null)
 
   const preloadStatus = useImagePreload(currentImage?.src)
   const isLoading = preloadStatus === 'loading'
@@ -31,92 +34,123 @@ function Lightbox({
 
   useEffect(() => {
     if (!currentImage) return
-
-    // Primer render o misma imagen
-    if (!displayImage || displayImage.id === currentImage.id) {
+    
+    if (!displayImage) {
       setDisplayImage(currentImage)
-      setFadeState('idle')
       return
     }
+    
+    if (displayImage.id === currentImage.id) return
 
-    // Espera a que cargue la nueva antes de swap
-    if (preloadStatus !== 'loaded') return
-
-    setFadeState('fading-out')
-    const out = setTimeout(() => {
+    const currentIdx = images.findIndex(img => img.id === displayImage.id)
+    const newIdx = images.findIndex(img => img.id === currentImage.id)
+    
+    if (currentIdx === -1 || newIdx === -1) return
+    
+    const direction = newIdx > currentIdx ? 'right' : 'left'
+    
+    setSlideDirection(direction)
+    
+    const timer = setTimeout(() => {
       setDisplayImage(currentImage)
-      setFadeState('fading-in')
-    }, 150)
+      setSlideDirection(null)
+    }, 300)
 
-    const done = setTimeout(() => setFadeState('idle'), 420)
+    return () => clearTimeout(timer)
+  }, [currentImage, displayImage, images])
 
-    return () => {
-      clearTimeout(out)
-      clearTimeout(done)
-    }
-  }, [currentImage, displayImage, preloadStatus])
-
-  const opacityClass =
-    fadeState === 'fading-out'
-      ? 'opacity-0'
-      : fadeState === 'fading-in'
-        ? 'opacity-100 animate-fadeSwap'
-        : 'opacity-100'
+  const slideClass = slideDirection === 'left' 
+    ? 'translate-x-full opacity-0' 
+    : slideDirection === 'right' 
+    ? '-translate-x-full opacity-0'
+    : 'translate-x-0 opacity-100'
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} ariaLabel="Visor de imágenes">
-      {displayImage ? (
-        <div className="card flex flex-col gap-4 p-4 lg:p-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3 text-sm font-semibold text-ink">
-              <span className="chip capitalize">{displayImage.category}</span>
-              <span className="text-muted">
-                {currentIndex + 1} / {images.length}
+      {displayImage && (
+        <div 
+          ref={containerRef}
+          className="rounded-3xl border-2 border-line bg-white flex flex-col gap-4 p-4 lg:p-6 max-h-[90vh] w-full overflow-hidden shadow-2xl"
+        >
+          {/* Header */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between flex-shrink-0">
+            <div className="flex items-center gap-3">
+              <span className="chip capitalize border-brand/30 bg-brand/5 text-brand">
+                {displayImage.category}
               </span>
+              <div className="flex items-center gap-2 text-sm font-semibold text-ink">
+                <div className="h-1.5 w-1.5 rounded-full bg-accent" />
+                <span className="text-muted">
+                  {currentIndex + 1} / {images.length}
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={onCopy} className="px-3 py-2 text-sm">
-                {copied ? 'Copiado' : 'Copiar enlace'}
+              <Button 
+                variant="ghost" 
+                onClick={onCopy} 
+                className="px-3 py-2 text-sm border border-line hover:border-brand"
+              >
+                {copied ? (
+                  <span className="flex items-center gap-2">
+                    <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                    Copiado
+                  </span>
+                ) : 'Copiar enlace'}
               </Button>
-              <Button variant="ghost" onClick={onClose} className="px-3 py-2 text-sm">
-                <X size={18} />
+              <Button 
+                variant="ghost" 
+                onClick={onClose} 
+                className="px-3 py-2 text-sm border border-line hover:border-brand"
+              >
+                <X size={20} />
               </Button>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl bg-ink/5">
-            <div className="flex h-[70vh] max-h-[80vh] items-center justify-center">
-              {isLoading ? (
-                <div className="flex h-full w-full items-center justify-center">
-                  <div className="h-16 w-16 animate-pulse rounded-full bg-ink/10" />
-                </div>
-              ) : null}
+          {/* Contenedor de imagen */}
+          <div className="relative flex-1 min-h-0 overflow-hidden rounded-2xl border border-line bg-white flex items-center justify-center">
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
+                <div className="h-12 w-12 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+              </div>
+            )}
+            
+            <div 
+              className={`relative w-full h-full flex items-center justify-center p-4 transition-all duration-300 ease-in-out ${slideClass}`}
+            >
               <img
-                key={displayImage.id}
+                ref={imageRef}
                 src={displayImage.src}
                 alt={displayImage.alt}
-                className={`mx-auto h-full w-full max-h-[80vh] object-contain transition-opacity duration-200 ${opacityClass}`}
+                className="mx-auto max-h-full max-w-full object-contain"
+                style={{ 
+                  maxHeight: 'calc(90vh - 200px)',
+                  maxWidth: 'calc(100% - 100px)'
+                }}
               />
             </div>
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
+            
+            {/* Flechas */}
+            <div className="absolute inset-0 flex items-center justify-between px-4 md:px-8">
               <button
                 onClick={onPrev}
-                className="pointer-events-auto rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
-                aria-label="Anterior"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white shadow-lg transition-all hover:border-brand hover:scale-110 active:scale-95 md:h-12 md:w-12"
+                aria-label="Imagen anterior"
               >
-                <ChevronLeft size={18} />
+                <ChevronLeft size={24} className="text-ink md:size-6" />
               </button>
               <button
                 onClick={onNext}
-                className="pointer-events-auto rounded-full bg-white/80 p-2 text-ink shadow transition hover:bg-white"
-                aria-label="Siguiente"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white shadow-lg transition-all hover:border-brand hover:scale-110 active:scale-95 md:h-12 md:w-12"
+                aria-label="Imagen siguiente"
               >
-                <ChevronRight size={18} />
+                <ChevronRight size={24} className="text-ink md:size-6" />
               </button>
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </Modal>
   )
 }
