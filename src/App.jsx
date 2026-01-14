@@ -10,6 +10,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import WhatsAppChatModal from './components/WhatsAppChatModal'
 import WhatsAppFloat from './components/WhatsAppFloat'
+import MobileQuickNav from './components/MobileQuickNav'
 import Lightbox from './components/Lightbox'
 import { galleryByCategory, galleryCategories } from './data/gallery'
 import { defaultMessages } from './data/content'
@@ -113,7 +114,7 @@ function App() {
   }, [setUrlState])
 
   return (
-    <main className="bg-surface">
+    <main className="bg-surface" id="top">
       <Navbar onWhatsApp={() => openChat(defaultMessages.floating)} />
       <Hero onWhatsApp={() => openChat(defaultMessages.floating)} />
       <WhatWeDo />
@@ -134,6 +135,7 @@ function App() {
       <Contact onOpenWhatsApp={openChat} />
       <Footer />
       <WhatsAppFloat onClick={() => openChat(defaultMessages.floating)} />
+      <MobileQuickNav />
 
       <WhatsAppChatModal
         isOpen={chatOpen}

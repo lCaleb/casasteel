@@ -17,13 +17,15 @@ function Navbar({ onWhatsApp }) {
     <header className="sticky top-0 z-40 border-b border-line/70 bg-white/80 shadow-[0_18px_40px_-28px_rgba(0,0,0,0.45)] backdrop-blur">
       <Container className="flex items-center justify-between gap-6 py-3.5">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-brand/30 bg-white shadow-card">
-            <img src={logo} alt={brandName} className="h-full w-full object-contain p-1" />
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-base font-semibold text-ink">{brandName}</span>
-            <span className="text-xs text-muted">{slogan}</span>
-          </div>
+          <a href="#top" className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-brand/30 bg-white shadow-card">
+              <img src={logo} alt={brandName} className="h-full w-full object-contain p-1" />
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-base font-semibold text-ink">{brandName}</span>
+              <span className="text-xs text-muted">{slogan}</span>
+            </div>
+          </a>
         </div>
         <nav className="hidden items-center gap-6 text-sm font-semibold text-ink lg:flex">
           {links.map((link) => (

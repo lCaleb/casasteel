@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import Section from './Section'
 import SectionTitle from './SectionTitle'
 import Button from './Button'
@@ -11,11 +11,32 @@ function Contact({ onOpenWhatsApp }) {
     phone: '',
     email: '',
     city: '',
+    department: '',
   })
+
+  const capitalizeWords = (text) => {
+    const hasTrailingSpace = /\s$/.test(text)
+    const parts = text
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : ''))
+    const result = parts.join(' ')
+    return hasTrailingSpace && result ? `${result} ` : result
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    if (name === 'phone') {
+      const onlyDigits = value.replace(/\D/g, '').slice(0, 10)
+      setForm((prev) => ({ ...prev, phone: onlyDigits }))
+    } else if (name === 'name') {
+      setForm((prev) => ({ ...prev, name: capitalizeWords(value) }))
+    } else if (name === 'city' || name === 'department') {
+      setForm((prev) => ({ ...prev, [name]: capitalizeWords(value) }))
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }))
+    }
   }
 
   const handleWhatsApp = (e) => {
@@ -25,6 +46,7 @@ function Contact({ onOpenWhatsApp }) {
       `Nombre: ${form.name || '---'}`,
       `Teléfono/WhatsApp: ${form.phone || '---'}`,
       `Correo: ${form.email || '---'}`,
+      form.department ? `Departamento: ${form.department}` : null,
       form.city ? `Ciudad/Municipio: ${form.city}` : null,
     ].filter(Boolean)
     onOpenWhatsApp(lines.join('\n'))
@@ -48,7 +70,7 @@ function Contact({ onOpenWhatsApp }) {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink" htmlFor="name">
-                  Nombre *
+                  Nombre completo *
                 </label>
                 <input
                   id="name"
@@ -57,7 +79,7 @@ function Contact({ onOpenWhatsApp }) {
                   value={form.name}
                   onChange={handleChange}
                   className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="Tu nombre"
+                  placeholder="Tu nombre completo"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -71,11 +93,27 @@ function Contact({ onOpenWhatsApp }) {
                   value={form.phone}
                   onChange={handleChange}
                   className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="57XXXXXXXXXX"
+                  placeholder="10 dígitos"
+                  inputMode="numeric"
+                  pattern="\d{10}"
+                  maxLength={10}
                 />
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-semibold text-ink" htmlFor="department">
+                  Departamento
+                </label>
+                <input
+                  id="department"
+                  name="department"
+                  value={form.department}
+                  onChange={handleChange}
+                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
+                  placeholder="Ej: Antioquia"
+                />
+              </div>
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink" htmlFor="email">
                   Correo *
@@ -91,6 +129,8 @@ function Contact({ onOpenWhatsApp }) {
                   placeholder="tu@correo.com"
                 />
               </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-semibold text-ink" htmlFor="city">
                   Ciudad/Municipio (opcional)

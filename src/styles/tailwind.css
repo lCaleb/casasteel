@@ -39,6 +39,15 @@
     border-color: theme('colors.line');
     background-color: white;
     box-shadow: theme('boxShadow.card');
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease,
+      background-color 180ms ease;
+    animation: fadeSwap 340ms ease-out both;
+  }
+
+  .card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: theme('boxShadow.floating');
+    border-color: color-mix(in srgb, theme('colors.brand') 55%, theme('colors.line'));
   }
 
   .chip {

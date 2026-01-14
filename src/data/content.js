@@ -3,7 +3,7 @@ export const slogan = 'El acero no miente. Construcción firme.'
 export const coverage = 'Colombia'
 
 // Número dummy; reemplaza cuando tengas el definitivo
-export const phone = '573167126929'
+export const phone = '573147213401'
 
 export const waLink = (text) =>
   `https://wa.me/${phone}?text=${encodeURIComponent(text ?? '')}`

@@ -43,7 +43,11 @@ function Services() {
         />
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => (
-            <div key={service.title} className="card h-full p-6">
+            <div
+              key={service.title}
+              className="card group relative h-full bg-gradient-to-br from-white via-white to-field/5 p-6 hover:to-field/10"
+            >
+              <span className="absolute right-4 top-4 h-2 w-2 rounded-full bg-accent transition-transform duration-200 group-hover:scale-110" />
               <h3 className="text-lg font-semibold text-ink">{service.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">{service.desc}</p>
             </div>

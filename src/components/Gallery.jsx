@@ -11,7 +11,7 @@ const PreviewGrid = ({ images, onOpenImage }) => {
     <div className="grid gap-6 lg:grid-cols-3">
       {featured ? (
         <button
-          className="group relative lg:col-span-2"
+          className="group relative transform transition duration-200 lg:col-span-2 hover:scale-[1.01]"
           onClick={() => onOpenImage(featured)}
         >
           <div className="aspect-[16/10] overflow-hidden rounded-[24px] border border-line bg-white shadow-card transition duration-200 group-hover:-translate-y-1 group-hover:shadow-floating">
@@ -33,7 +33,7 @@ const PreviewGrid = ({ images, onOpenImage }) => {
           <button
             key={item.id}
             onClick={() => onOpenImage(item)}
-            className="group block w-full overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-floating"
+            className="group block w-full transform overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-floating"
           >
             <div className="aspect-[4/3] overflow-hidden">
               <img
@@ -55,7 +55,7 @@ const FullGrid = ({ images, onOpenImage }) => (
       <button
         key={item.id}
         onClick={() => onOpenImage(item)}
-        className="group block w-full overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:shadow-floating"
+        className="group block w-full transform overflow-hidden rounded-2xl border border-line bg-white shadow-card transition duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-floating"
       >
         <div className="aspect-[4/3] overflow-hidden">
           <img

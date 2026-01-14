@@ -23,7 +23,7 @@ function WhatsAppFloat({ onClick }) {
       {showTop ? (
         <button
           onClick={handleTop}
-          className="btn btn-ghost fixed bottom-28 right-8 z-40 px-3 py-2 shadow-card"
+          className="btn btn-ghost fixed bottom-40 right-8 z-40 px-3 py-2 shadow-card lg:bottom-32"
           aria-label="Volver arriba"
         >
           <ChevronUp size={18} />
@@ -33,7 +33,7 @@ function WhatsAppFloat({ onClick }) {
 
       <button
         onClick={onClick}
-        className="fixed bottom-8 right-8 z-40 flex h-[76px] w-[76px] items-center justify-center rounded-full text-accent drop-shadow-lg transition hover:scale-110 focus:outline-none animate-float"
+        className="fixed bottom-20 right-8 z-40 flex h-[76px] w-[76px] items-center justify-center rounded-full text-accent drop-shadow-lg transition hover:scale-110 focus:outline-none animate-float lg:bottom-10 lg:right-10"
         aria-label="Abrir WhatsApp"
       >
         <img src={whatsappLogo} alt="WhatsApp" className="h-12 w-12 animate-float" />
