@@ -1,6 +1,6 @@
 ﻿export const brandName = "Casasteel Estructuras"
 export const slogan = "El acero no miente. Construcción firme."
-export const coverage = "Colombia"
+export const coverage = "Valle del Cauca y Colombia"
 
 // Número dummy; reemplaza cuando tengas el definitivo
 export const phone = "573147213401"

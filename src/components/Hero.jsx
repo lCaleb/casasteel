@@ -16,9 +16,10 @@ function Hero({ onWhatsApp }) {
     <section className="overflow-hidden bg-surface">
       {/* Logo grande de fondo - CENTRADO */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <img 
-          src={logo} 
-          alt={brandName} 
+        <img
+          src={logo}
+          alt={brandName}
+          loading="lazy"
           className="h-auto max-h-[70vh] w-auto max-w-[70vw] object-contain opacity-10"
         />
       </div>
@@ -52,7 +53,12 @@ function Hero({ onWhatsApp }) {
           <div className="flex items-center gap-6 rounded-3xl border border-line bg-white p-6 shadow-card">
             {/* Logo MÁS GRANDE */}
             <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border-2 border-brand bg-white p-2 shadow-lg">
-              <img src={logo} alt={brandName} className="h-full w-full object-contain" />
+              <img
+                src={logo}
+                alt={brandName}
+                loading="lazy"
+                className="h-full w-full object-contain"
+              />
             </div>
             
             <div className="flex flex-col">
@@ -93,7 +99,12 @@ function Hero({ onWhatsApp }) {
           <div className="relative overflow-hidden rounded-3xl border border-line bg-white shadow-card">
             {/* Logo solo abajo a la derecha */}
             <div className="pointer-events-none absolute -right-6 -bottom-8 h-32 w-32 opacity-20">
-              <img src={logo} alt={brandName} className="h-full w-full object-contain" />
+              <img
+                src={logo}
+                alt={brandName}
+                loading="lazy"
+                className="h-full w-full object-contain"
+              />
             </div>
             
             <div className="grid gap-3 p-6">
@@ -118,7 +129,12 @@ function Hero({ onWhatsApp }) {
             <div className="border-t border-line/30 p-4">
               <div className="flex items-center justify-center gap-3">
                 <div className="h-6 w-6 overflow-hidden rounded-full">
-                  <img src={logo} alt={brandName} className="h-full w-full object-contain" />
+                  <img
+                    src={logo}
+                    alt={brandName}
+                    loading="lazy"
+                    className="h-full w-full object-contain"
+                  />
                 </div>
                 <span className="text-sm font-medium text-muted">{brandName} - Tiempos de entrega</span>
               </div>

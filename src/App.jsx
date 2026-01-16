@@ -12,6 +12,7 @@ import WhatsAppChatModal from './components/WhatsAppChatModal'
 import WhatsAppFloat from './components/WhatsAppFloat'
 import MobileQuickNav from './components/MobileQuickNav'
 import Lightbox from './components/Lightbox'
+import ErrorBoundary from './components/ErrorBoundary'
 import { galleryByCategory, galleryCategories } from './data/gallery'
 import { defaultMessages } from './data/content'
 import { useUrlState } from './hooks/useUrlState'
@@ -119,20 +120,31 @@ function App() {
       <Hero onWhatsApp={() => openChat(defaultMessages.floating)} />
       <WhatWeDo />
       <Process />
-      <Gallery
-        categories={galleryCategories}
-        activeCategory={activeCategory}
-        imagesByCategory={galleryByCategory}
-        galleryMode={galleryMode}
-        onCategoryChange={handleCategoryChange}
-        onOpenImage={openImage}
-        onOpenFirst={openFirstImage}
-        onEnterGalleryMode={enterGalleryMode}
-        onExitGalleryMode={exitGalleryMode}
-      />
+      <ErrorBoundary
+        fallback={
+          <section id="proyectos" className="bg-white py-12 lg:py-16">
+            <div className="container-app text-center">
+              <p className="text-xl font-semibold text-ink">No se pudo cargar la galería.</p>
+              <p className="mt-2 text-muted">Recarga la página o revisa tu conexión.</p>
+            </div>
+          </section>
+        }
+      >
+        <Gallery
+          categories={galleryCategories}
+          activeCategory={activeCategory}
+          imagesByCategory={galleryByCategory}
+          galleryMode={galleryMode}
+          onCategoryChange={handleCategoryChange}
+          onOpenImage={openImage}
+          onOpenFirst={openFirstImage}
+          onEnterGalleryMode={enterGalleryMode}
+          onExitGalleryMode={exitGalleryMode}
+        />
+      </ErrorBoundary>
       <Guarantee />
       <Services />
-      <Contact onOpenWhatsApp={openChat} />
+      <Contact />
       <Footer />
       <WhatsAppFloat onClick={() => openChat(defaultMessages.floating)} />
       <MobileQuickNav />
@@ -143,19 +155,22 @@ function App() {
         onClose={() => setChatOpen(false)}
       />
 
-      <Lightbox
-        isOpen={lightboxOpen}
-        images={currentImages}
-        currentImage={currentImage}
-        currentIndex={currentIndex}
-        onPrev={goPrev}
-        onNext={goNext}
-        onClose={closeLightbox}
-        onCopy={copyLink}
-        copied={copied}
-      />
+      <ErrorBoundary>
+        <Lightbox
+          isOpen={lightboxOpen}
+          images={currentImages}
+          currentImage={currentImage}
+          currentIndex={currentIndex}
+          onPrev={goPrev}
+          onNext={goNext}
+          onClose={closeLightbox}
+          onCopy={copyLink}
+          copied={copied}
+        />
+      </ErrorBoundary>
     </main>
   )
 }
 
 export default App
+

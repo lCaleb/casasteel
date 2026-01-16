@@ -81,6 +81,9 @@ function Lightbox({
     exit: { opacity: 0, y: 10, scale: 0.98, transition: { duration: 0.3, ease: 'easeInOut' } },
   }
 
+  const fallbackImg =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23f3f3ef'/%3E%3Ctext x='400' y='310' fill='%239aa1a6' font-size='18' text-anchor='middle'%3EImagen no disponible%3C/text%3E%3C/svg%3E"
+
   return (
     <AnimatePresence>
       {isOpen && displayImage && (
@@ -129,18 +132,23 @@ function Lightbox({
                 <motion.img
                   drag={isMobile ? 'x' : false}
                   dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={(_, info) => {
-                    if (!isMobile) return
-                    const threshold = 80
-                    if (info.offset.x < -threshold) onNext()
-                    else if (info.offset.x > threshold) onPrev()
-                    setDragProgress(0)
-                  }}
-                  src={displayImage.src}
-                  alt={displayImage.alt}
-                  className="mx-auto max-h-full max-w-full rounded-2xl object-contain shadow-lg transition-transform duration-300"
-                  style={{ transform: 'scale(1)', willChange: 'transform' }}
-                />
+                onDragEnd={(_, info) => {
+                  if (!isMobile) return
+                  const threshold = 80
+                  if (info.offset.x < -threshold) onNext()
+                  else if (info.offset.x > threshold) onPrev()
+                  setDragProgress(0)
+                }}
+                src={displayImage.src}
+                alt={displayImage.alt}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImg
+                  e.currentTarget.onerror = null
+                }}
+                className="mx-auto max-h-full max-w-full rounded-2xl object-contain shadow-lg transition-transform duration-300"
+                style={{ transform: 'scale(1)', willChange: 'transform' }}
+              />
 
                 <div className="pointer-events-none absolute left-4 top-4 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white shadow">
                   {displayImage.alt}
@@ -168,9 +176,9 @@ function Lightbox({
               )}
             </div>
 
-            {/* Dots con efecto sticky */}
+            {/* Dots refinados */}
             <div className="flex items-center justify-center">
-              <div className="relative flex max-w-full items-center gap-2 overflow-x-auto px-3 py-1">
+              <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-full bg-surface px-2.5 py-1 shadow-inner md:flex-nowrap md:gap-3 md:px-4 md:py-2">
                 {images.map((_, idx) => (
                   <button
                     key={idx}
@@ -179,12 +187,13 @@ function Lightbox({
                       if (idx > currentIndex) onNext()
                       else onPrev()
                     }}
-                    className={`relative h-2 w-2 rounded-full transition ${
+                    className={`h-1.5 rounded-full transition-all duration-200 md:h-2.5 ${
                       idx === currentIndex
-                        ? 'bg-accent shadow-[0_0_0_6px_rgba(15,61,62,0.12)]'
-                        : 'bg-line hover:bg-accent/40'
+                        ? 'w-4 bg-accent shadow-[0_0_0_4px_rgba(194,106,46,0.18)] md:w-7'
+                        : 'w-2 bg-line hover:bg-accent/30 md:w-3'
                     }`}
                     aria-label={`Ir a imagen ${idx + 1}`}
+                    aria-current={idx === currentIndex}
                   />
                 ))}
               </div>
@@ -208,3 +217,4 @@ function Lightbox({
 }
 
 export default Lightbox
+

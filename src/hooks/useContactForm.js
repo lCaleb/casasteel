@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 
 export const capitalizeWords = (text) => {
   const hasTrailingSpace = /\s$/.test(text)
@@ -102,7 +102,7 @@ export const useContactForm = ({ onSubmit }) => {
     if (onSubmit) {
       onSubmit(message)
     }
-    setTimeout(() => setIsSubmitting(false), 1000)
+    setTimeout(() => setIsSubmitting(false), 800)
   }
 
   return {

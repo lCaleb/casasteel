@@ -5,6 +5,9 @@ import SectionTitle from './SectionTitle'
 import Container from './Container'
 import Button from './Button'
 
+const fallbackImg =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23f3f3ef'/%3E%3Ctext x='200' y='160' fill='%239aa1a6' font-size='16' text-anchor='middle'%3EImagen no disponible%3C/text%3E%3C/svg%3E"
+
 const PreviewGrid = ({ images, onOpenImage, className = '' }) => {
   const featured = images[0]
   const secondary = images.slice(1, 3)
@@ -14,11 +17,16 @@ const PreviewGrid = ({ images, onOpenImage, className = '' }) => {
       {featured ? (
         <button className="group relative lg:col-span-2" onClick={() => onOpenImage(featured)}>
           <div className="aspect-[16/10] overflow-hidden rounded-2xl border-2 border-line bg-white shadow-card transition-all duration-300 group-hover:-translate-y-1 group-hover:border-accent group-hover:shadow-floating">
-            <img
-              src={featured.src}
-              alt={featured.alt}
-              className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-            />
+              <img
+                src={featured.src}
+                alt={featured.alt}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImg
+                  e.currentTarget.onerror = null
+                }}
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
             <div className="absolute inset-0 bg-black/0 transition-all duration-300 group-hover:bg-black/5" />
           </div>
           <div className="mt-3 flex items-center justify-between text-sm">
@@ -44,6 +52,11 @@ const PreviewGrid = ({ images, onOpenImage, className = '' }) => {
               <img
                 src={item.src}
                 alt={item.alt}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = fallbackImg
+                  e.currentTarget.onerror = null
+                }}
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -67,6 +80,11 @@ const FullGrid = ({ images, onOpenImage, className = '' }) => (
           <img
             src={item.src}
             alt={item.alt}
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = fallbackImg
+              e.currentTarget.onerror = null
+            }}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
           <div className="absolute right-3 top-3 h-2 w-2 rounded-full bg-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
