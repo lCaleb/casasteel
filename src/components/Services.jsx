@@ -53,7 +53,7 @@ function Services() {
           {services.map((item) => (
             <div
               key={item.title}
-              className="card group flex flex-col gap-3 rounded-3xl border-line bg-white/90 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-card"
+              className="card group flex flex-col gap-3 rounded-3xl border-line bg-white/90 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-card hover:border-accent"
             >
               <div className="flex items-center gap-3">
                 <span className="chip bg-surface text-xs font-semibold text-accent">{item.category}</span>
