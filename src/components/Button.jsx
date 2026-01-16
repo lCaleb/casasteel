@@ -2,6 +2,7 @@ const variants = {
   primary: 'btn-primary',
   ghost: 'btn-ghost',
   brand: 'btn-brand',
+  accent: 'btn-accent',
 }
 
 function Button({ href, children, variant = 'primary', className = '', type = 'button', ...props }) {

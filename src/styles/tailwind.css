@@ -69,6 +69,21 @@
     box-shadow: theme('boxShadow.card');
   }
 
+  .btn-accent {
+    @apply btn border;
+    border-color: theme('colors.accent');
+    background-color: white;
+    color: theme('colors.accent');
+    transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .btn-accent:hover {
+    background-color: theme('colors.surface');
+    color: theme('colors.accent');
+    border-color: theme('colors.accent');
+    box-shadow: theme('boxShadow.card');
+  }
+
   .btn-brand {
     @apply btn text-white hover:opacity-95;
     background-color: theme('colors.brand');
@@ -106,5 +121,15 @@
   .section-title_subtitle {
     @apply max-w-3xl text-base leading-relaxed lg:text-lg;
     color: theme('colors.muted');
+  }
+
+  .input-base {
+    @apply w-full rounded-xl border bg-white px-4 py-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-brand/20;
+    border-color: theme('colors.line');
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .input-base:focus {
+    border-color: theme('colors.brand');
   }
 }

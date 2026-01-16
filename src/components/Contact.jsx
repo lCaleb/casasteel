@@ -1,178 +1,174 @@
-﻿import { useState } from 'react'
-import Section from './Section'
-import SectionTitle from './SectionTitle'
-import Button from './Button'
+﻿import Section from "./Section"
+import SectionTitle from "./SectionTitle"
+import Button from "./Button"
+import InputField from "./InputField"
+import { contactInfoList, contactCopy } from "../data/content"
+import { useContactForm } from "../hooks/useContactForm"
+import { MessageSquare, MapPin, Ruler, Camera } from "lucide-react"
 
-const infoList = ['Ubicación del terreno', 'Metros aproximados', 'Fotos o video del terreno']
+// Iconos para la lista de información
+const infoIcons = [MapPin, Ruler, Camera]
 
 function Contact({ onOpenWhatsApp }) {
-  const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    city: '',
-    department: '',
+  const { form, errors, isSubmitting, handleChange, handleSubmit } = useContactForm({
+    onSubmit: (message) => onOpenWhatsApp(message),
   })
 
-  const capitalizeWords = (text) => {
-    const hasTrailingSpace = /\s$/.test(text)
-    const parts = text
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : ''))
-    const result = parts.join(' ')
-    return hasTrailingSpace && result ? `${result} ` : result
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === 'phone') {
-      const onlyDigits = value.replace(/\D/g, '').slice(0, 10)
-      setForm((prev) => ({ ...prev, phone: onlyDigits }))
-    } else if (name === 'name') {
-      setForm((prev) => ({ ...prev, name: capitalizeWords(value) }))
-    } else if (name === 'city' || name === 'department') {
-      setForm((prev) => ({ ...prev, [name]: capitalizeWords(value) }))
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }))
-    }
-  }
-
-  const handleWhatsApp = (e) => {
-    e.preventDefault()
-    const lines = [
-      'Hola, quiero cotizar una casa con estructura metálica. Te comparto mis datos:',
-      `Nombre: ${form.name || '---'}`,
-      `Teléfono/WhatsApp: ${form.phone || '---'}`,
-      `Correo: ${form.email || '---'}`,
-      form.department ? `Departamento: ${form.department}` : null,
-      form.city ? `Ciudad/Municipio: ${form.city}` : null,
-    ].filter(Boolean)
-    onOpenWhatsApp(lines.join('\n'))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Formulario enviado:', form)
-  }
-
   return (
-    <Section id="contacto" className="bg-white">
-      <div className="grid gap-8 lg:grid-cols-[1.1fr,0.9fr] lg:items-start">
-        <div className="card p-6 lg:p-8">
+    <Section id="contacto" className="bg-[#f3f3ef]">
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+        
+        {/* Columna izquierda - Formulario */}
+        <div className="rounded-3xl border-2 border-line bg-white p-6 shadow-card lg:p-8">
           <SectionTitle
             eyebrow="Contacto"
             title="Hablemos de tu proyecto"
             subtitle="Déjanos tus datos y te respondemos por WhatsApp."
           />
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink" htmlFor="name">
-                  Nombre completo *
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  required
-                  value={form.name}
-                  onChange={handleChange}
-                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="Tu nombre completo"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink" htmlFor="phone">
-                  Teléfono/WhatsApp *
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  required
-                  value={form.phone}
-                  onChange={handleChange}
-                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="10 dígitos"
-                  inputMode="numeric"
-                  pattern="\d{10}"
-                  maxLength={10}
-                />
-              </div>
+          
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            {/* Grid de inputs */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <InputField
+                id="name"
+                name="name"
+                label="Nombre completo"
+                required
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Tu nombre completo"
+                error={errors.name}
+                variant="bordered"
+              />
+              <InputField
+                id="phone"
+                name="phone"
+                label="Teléfono/WhatsApp"
+                required
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="10 dígitos"
+                error={errors.phone}
+                variant="bordered"
+                inputProps={{ inputMode: "numeric", pattern: "\\d{10}", maxLength: 10 }}
+              />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink" htmlFor="department">
-                  Departamento
-                </label>
-                <input
-                  id="department"
-                  name="department"
-                  value={form.department}
-                  onChange={handleChange}
-                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="Ej: Antioquia"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink" htmlFor="email">
-                  Correo *
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="tu@correo.com"
-                />
-              </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <InputField
+                id="department"
+                name="department"
+                label="Departamento"
+                value={form.department}
+                onChange={handleChange}
+                placeholder="Ej: Antioquia"
+                variant="bordered"
+              />
+              <InputField
+                id="email"
+                name="email"
+                label="Correo electrónico"
+                type="email"
+                required
+                value={form.email}
+                onChange={handleChange}
+                placeholder="tu@correo.com"
+                error={errors.email}
+                variant="bordered"
+              />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-ink" htmlFor="city">
-                  Ciudad/Municipio (opcional)
-                </label>
-                <input
-                  id="city"
-                  name="city"
-                  value={form.city}
-                  onChange={handleChange}
-                  className="rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
-                  placeholder="Ciudad o municipio"
-                />
-              </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <InputField
+                id="city"
+                name="city"
+                label="Ciudad/Municipio"
+                value={form.city}
+                onChange={handleChange}
+                placeholder="Ciudad o municipio"
+                variant="bordered"
+              />
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button className="w-full sm:w-auto" onClick={handleWhatsApp}>
-                Enviar a WhatsApp
-              </Button>
-              <Button variant="ghost" className="w-full text-brand sm:w-auto" type="submit">
-                Enviar formulario
+
+            {/* Botón de envío */}
+            <div className="pt-2">
+              <Button 
+                type="submit" 
+                className="w-full group"
+                disabled={isSubmitting}
+              >
+                <span className="flex items-center justify-center gap-3">
+                  <MessageSquare className="h-5 w-5" />
+                  <span>{isSubmitting ? "Enviando..." : "Enviar a WhatsApp"}</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </span>
               </Button>
             </div>
-            <p className="text-xs text-muted">
-              Al enviar aceptas ser contactado para la cotización. No compartimos tu información con
-              terceros.
-            </p>
+            
+            {/* Aviso legal */}
+            <div className="rounded-xl border border-line/50 bg-surface p-4">
+              <p className="text-xs text-muted" aria-live="polite">
+                Al enviar aceptas ser contactado para la cotización. No compartimos tu información con terceros.
+              </p>
+            </div>
           </form>
         </div>
 
-        <div className="card p-6 lg:p-8">
-          <h3 className="text-lg font-semibold text-ink">Ten a la mano (si puedes)</h3>
-          <ul className="mt-4 space-y-3 text-sm text-muted">
-            {infoList.map((item) => (
-              <li key={item} className="flex items-start gap-3">
-                <span className="mt-1 h-2 w-2 rounded-full bg-field" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 rounded-2xl border border-line bg-surface px-4 py-3 text-sm text-ink">
-            Déjanos tus datos y coordinamos por WhatsApp según disponibilidad y evaluación del
-            terreno.
+        {/* Columna derecha - Información útil */}
+        <div className="space-y-6">
+          {/* Card de información */}
+          <div className="rounded-3xl border-2 border-line bg-white p-6 shadow-card lg:p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="h-2 w-2 rounded-full bg-accent" />
+              <h3 className="text-lg font-semibold text-ink">Ten a la mano (si puedes)</h3>
+            </div>
+            
+            <ul className="space-y-4">
+              {contactInfoList.map((item, index) => {
+                const Icon = infoIcons[index] || MapPin
+                return (
+                  <li key={item} className="flex items-start gap-4 group">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface">
+                      <Icon className="h-5 w-5 text-muted" />
+                    </div>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-medium text-ink">{item}</p>
+                      <div className="mt-2 h-px w-0 bg-accent/30 transition-all duration-300 group-hover:w-12" />
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          {/* Card de proceso */}
+          <div className="rounded-3xl border-2 border-line bg-white p-6 shadow-card lg:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-2 w-2 rounded-full bg-accent" />
+              <h3 className="text-lg font-semibold text-ink">¿Qué sigue después?</h3>
+            </div>
+            
+            <div className="space-y-3">
+              {[
+                { step: "1", text: "Recibimos tu información por WhatsApp" },
+                { step: "2", text: "Coordinamos evaluación del terreno" },
+                { step: "3", text: "Preparamos cotización detallada" }
+              ].map((item) => (
+                <div key={item.step} className="flex gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-surface text-xs font-bold text-brand">
+                    {item.step}
+                  </div>
+                  <p className="text-sm text-muted">{item.text}</p>
+                </div>
+              ))}
+            </div>
+            
+            {/* Nota final */}
+            <div className="mt-6 rounded-xl border border-line/50 bg-surface p-4">
+              <p className="text-sm text-muted">
+                {contactCopy.helper}
+              </p>
+            </div>
           </div>
         </div>
       </div>

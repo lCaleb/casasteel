@@ -100,11 +100,11 @@ function Hero({ onWhatsApp }) {
               {timelineCards.map((item, idx) => (
                 <div
                   key={item.title}
-                  className="card group relative flex flex-col gap-2 rounded-2xl border-line/70 bg-gradient-to-br from-white via-white to-field/5 px-5 py-4 shadow-card transition duration-200 hover:border-brand/60 hover:shadow-floating hover:to-field/10"
+                  className="card group relative flex flex-col gap-2 rounded-2xl border-line/70 bg-gradient-to-br from-white via-white to-field/5 px-5 py-4 shadow-card transition duration-200 hover:border-accent/60 hover:shadow-floating hover:to-field/10"
                   style={{ animationDelay: `${idx * 80}ms` }}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-brand">
+                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-accent">
                       {item.title}
                     </p>
                     <span className="h-2 w-2 rounded-full bg-accent transition-transform duration-200 group-hover:scale-110" />

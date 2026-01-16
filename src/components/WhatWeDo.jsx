@@ -34,7 +34,7 @@ function WhatWeDo() {
           {items.map((item, index) => (
             <div 
               key={item.title}
-              className="group relative overflow-hidden rounded-2xl border-2 border-line bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-brand hover:shadow-floating"
+              className="group relative overflow-hidden rounded-2xl border-2 border-line bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-accent hover:shadow-floating"
             >
               {/* Número de índice VISIBLE */}
               <div className="absolute right-4 top-4 text-5xl font-bold text-gray-100 select-none">
@@ -42,9 +42,9 @@ function WhatWeDo() {
               </div>
               
               {/* Línea superior decorativa */}
-              <div className="mb-4 h-1 w-12 rounded-full bg-brand/30 transition-all duration-300 group-hover:w-16 group-hover:bg-brand" />
+              <div className="mb-4 h-1 w-12 rounded-full bg-accent/30 transition-all duration-300 group-hover:w-16 group-hover:bg-accent" />
               
-              <h3 className="relative text-lg font-semibold text-ink">
+              <h3 className="relative text-lg font-semibold text-accent">
                 {item.title}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">
