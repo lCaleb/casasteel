@@ -13,6 +13,7 @@ function Lightbox({
   currentIndex,
   onPrev,
   onNext,
+  onGoTo,
   onClose,
   onCopy,
   copied,
@@ -97,9 +98,9 @@ function Lightbox({
             className="flex w-full max-h-[88vh] flex-col gap-4 overflow-hidden rounded-3xl border border-white/50 bg-white/95 p-4 shadow-[0_28px_90px_-36px_rgba(0,0,0,0.6)] backdrop-blur-md sm:p-5 lg:max-h-[84vh] lg:p-6"
           >
             {/* Header compacto */}
-            <div className="flex flex-shrink-0 items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="chip capitalize border-accent/30 bg-accent/5 text-accent">
+            <div className="flex flex-shrink-0 flex-wrap items-start justify-between gap-3 sm:flex-nowrap sm:items-center">
+              <div className="flex flex-wrap items-center gap-1">
+                <span className="chip max-w-[60vw] truncate capitalize border-accent/30 bg-accent/5 text-accent sm:max-w-none">
                   {displayImage.category}
                 </span>
                 <div className="flex items-center gap-2 rounded-full bg-ink/5 px-3 py-1 text-xs font-semibold text-ink">
@@ -150,8 +151,8 @@ function Lightbox({
                 style={{ transform: 'scale(1)', willChange: 'transform' }}
               />
 
-                <div className="pointer-events-none absolute left-4 top-4 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white shadow">
-                  {displayImage.alt}
+                <div className="pointer-events-none absolute left-4 top-6 max-w-[75%] rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white shadow">
+                  <span className="block truncate">{displayImage.alt}</span>
                 </div>
               </div>
 
@@ -178,19 +179,18 @@ function Lightbox({
 
             {/* Dots refinados */}
             <div className="flex items-center justify-center">
-              <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5 rounded-full bg-surface px-2.5 py-1 shadow-inner md:flex-nowrap md:gap-3 md:px-4 md:py-2">
+              <div className="flex max-w-full items-center gap-2 overflow-x-auto rounded-full bg-surface px-3 py-1 shadow-inner whitespace-nowrap md:gap-3 md:px-4 md:py-2">
                 {images.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => {
                       if (idx === currentIndex) return
-                      if (idx > currentIndex) onNext()
-                      else onPrev()
+                      if (onGoTo) onGoTo(idx)
                     }}
                     className={`h-1.5 rounded-full transition-all duration-200 md:h-2.5 ${
                       idx === currentIndex
-                        ? 'w-4 bg-accent shadow-[0_0_0_4px_rgba(194,106,46,0.18)] md:w-7'
-                        : 'w-2 bg-line hover:bg-accent/30 md:w-3'
+                        ? 'w-4 bg-accent shadow-[0_0_0_3px_rgba(194,106,46,0.14)] md:w-5 md:shadow-[0_0_0_4px_rgba(194,106,46,0.16)]'
+                        : 'w-2 bg-line hover:bg-accent/30 md:w-2.5'
                     }`}
                     aria-label={`Ir a imagen ${idx + 1}`}
                     aria-current={idx === currentIndex}
@@ -217,4 +217,3 @@ function Lightbox({
 }
 
 export default Lightbox
-

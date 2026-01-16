@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { waLink } from '../data/content'
 import Button from './Button'
-import whatsappLogo from '../assets/whatsapp.svg'
+import whatsappLogo from '../assets/whatsapp-logo.png'
 
 function WhatsAppChatModal({ isOpen, initialMessage, onClose }) {
   const [message, setMessage] = useState(initialMessage)

@@ -22,18 +22,14 @@ function Footer() {
 
   return (
     <footer className="border-t-2 border-line bg-white relative overflow-hidden min-h-[600px]">
-      {/* Logo duplicado con 3% de opacidad - MUCHO MÁS GRANDE Y VISIBLE */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="h-full w-full flex items-center justify-center">
-          <img
-            src={logo}
-            alt={brandName}
-            loading="lazy"
-            className="h-auto w-[800px] max-w-[95%] object-contain opacity-[0.07]"
-          />
-        </div>
+      <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center">
+        <img
+          src={logo}
+          alt={brandName}
+          loading="lazy"
+          className="h-auto w-[800px] max-w-[95%] object-contain opacity-10"
+        />
       </div>
-      
       <div className="container-app relative z-10">
         {/* Sección superior con más espacio */}
         <div className="grid gap-12 py-16 lg:grid-cols-3">

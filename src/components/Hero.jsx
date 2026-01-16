@@ -13,17 +13,10 @@ const timelineCards = [
 
 function Hero({ onWhatsApp }) {
   return (
-    <section className="overflow-hidden bg-surface">
-      {/* Logo grande de fondo - CENTRADO */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <img
-          src={logo}
-          alt={brandName}
-          loading="lazy"
-          className="h-auto max-h-[70vh] w-auto max-w-[70vw] object-contain opacity-10"
-        />
+    <section className="overflow-hidden bg-surface relative">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
+        <img src={logo} alt={brandName} loading="lazy" className="max-h-[70vh] max-w-[70vw] object-contain" />
       </div>
-
       <Container className="relative grid items-center gap-8 py-12 lg:grid-cols-2 lg:py-16">
         <div className="flex flex-col gap-6 relative z-10">
           <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand shadow-card">
@@ -95,18 +88,11 @@ function Hero({ onWhatsApp }) {
 
         <div className="relative">
           <div className="absolute inset-6 rounded-[32px] bg-brand/10 blur-3xl" />
-          
+
           <div className="relative overflow-hidden rounded-3xl border border-line bg-white shadow-card">
-            {/* Logo solo abajo a la derecha */}
-            <div className="pointer-events-none absolute -right-6 -bottom-8 h-32 w-32 opacity-20">
-              <img
-                src={logo}
-                alt={brandName}
-                loading="lazy"
-                className="h-full w-full object-contain"
-              />
+            <div className="pointer-events-none absolute -right-6 -bottom-8 h-32 w-32 opacity-15">
+              <img src={logo} alt={brandName} loading="lazy" className="h-full w-full object-contain" />
             </div>
-            
             <div className="grid gap-3 p-6">
               {timelineCards.map((item, idx) => (
                 <div

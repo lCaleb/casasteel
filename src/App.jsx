@@ -17,6 +17,7 @@ import { galleryByCategory, galleryCategories } from './data/gallery'
 import { defaultMessages } from './data/content'
 import { useUrlState } from './hooks/useUrlState'
 import { useCopyToClipboard } from './hooks/useCopyToClipboard'
+import logo from './assets/Logo-casasteel.png'
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('exterior')
@@ -81,6 +82,16 @@ function App() {
     setCurrentImageId(nextImage.id)
     setUrlState(activeCategory, nextImage.id)
   }, [activeCategory, currentImages, currentIndex, setUrlState])
+
+  const goToIndex = useCallback(
+    (idx) => {
+      if (idx < 0 || idx >= currentImages.length) return
+      const target = currentImages[idx]
+      setCurrentImageId(target.id)
+      setUrlState(activeCategory, target.id)
+    },
+    [activeCategory, currentImages, setUrlState],
+  )
 
   const copyLink = useCallback(() => {
     if (!currentImage) return
@@ -160,13 +171,14 @@ function App() {
           isOpen={lightboxOpen}
           images={currentImages}
           currentImage={currentImage}
-          currentIndex={currentIndex}
-          onPrev={goPrev}
-          onNext={goNext}
-          onClose={closeLightbox}
-          onCopy={copyLink}
-          copied={copied}
-        />
+        currentIndex={currentIndex}
+        onPrev={goPrev}
+        onNext={goNext}
+        onGoTo={goToIndex}
+        onClose={closeLightbox}
+        onCopy={copyLink}
+        copied={copied}
+      />
       </ErrorBoundary>
     </main>
   )

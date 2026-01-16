@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ChevronUp } from 'lucide-react'
-import whatsappLogo from '../assets/whatsapp.svg'
+import whatsappLogo from '../assets/whatsapp-logo.png'
 
 function WhatsAppFloat({ onClick }) {
   const [showTop, setShowTop] = useState(false)
