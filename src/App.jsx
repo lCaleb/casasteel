@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import WhatWeDo from './components/WhatWeDo'
@@ -10,6 +10,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import WhatsAppChatModal from './components/WhatsAppChatModal'
 import WhatsAppFloat from './components/WhatsAppFloat'
+import CookieBanner from './components/CookieBanner'
 import MobileQuickNav from './components/MobileQuickNav'
 import Lightbox from './components/Lightbox'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -27,6 +28,11 @@ function App() {
   const [chatOpen, setChatOpen] = useState(false)
   const [chatMessage, setChatMessage] = useState(defaultMessages.floating)
   const { copied, copy } = useCopyToClipboard()
+  const trackFb = useCallback((event, params = {}) => {
+    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      window.fbq('trackCustom', event, params)
+    }
+  }, [])
 
   const { applyUrlState, setUrlState } = useUrlState({
     categories: galleryCategories,
@@ -49,9 +55,10 @@ function App() {
     })
   }, [applyUrlState])
 
-  const openChat = (message) => {
+  const openChat = (message, source = 'generic') => {
     setChatMessage(message || defaultMessages.floating)
     setChatOpen(true)
+    trackFb('ClickWhatsApp', { source })
   }
 
   const openImage = useCallback((image) => {
@@ -59,7 +66,12 @@ function App() {
     setCurrentImageId(image.id)
     setLightboxOpen(true)
     setUrlState(image.category, image.id)
-  }, [setUrlState])
+    trackFb('ViewPhoto', {
+      cat: image.category,
+      id: image.id,
+      mode: galleryMode ? 'full' : 'preview',
+    })
+  }, [galleryMode, setUrlState, trackFb])
 
   const closeLightbox = useCallback(() => {
     setLightboxOpen(false)
@@ -104,17 +116,23 @@ function App() {
     setLightboxOpen(false)
     setCurrentImageId(null)
     setUrlState(cat, null)
-  }, [setUrlState])
+    trackFb('GalleryCategory', { cat })
+  }, [setUrlState, trackFb])
 
   const openFirstImage = useCallback(() => {
     if (!currentImages.length) return
     openImage(currentImages[0])
   }, [currentImages, openImage])
 
+  const trackViewProjects = useCallback(() => {
+    trackFb('ViewProjectsCTA', { source: 'hero-link' })
+  }, [trackFb])
+
   const enterGalleryMode = useCallback(() => {
     setGalleryMode(true)
     setUrlState(activeCategory, null)
-  }, [activeCategory, setUrlState])
+    trackFb('GalleryMode', { mode: 'full', cat: activeCategory })
+  }, [activeCategory, setUrlState, trackFb])
 
   const exitGalleryMode = useCallback(() => {
     setGalleryMode(false)
@@ -123,20 +141,24 @@ function App() {
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [setUrlState])
+    trackFb('GalleryMode', { mode: 'preview', cat: activeCategory })
+  }, [activeCategory, setUrlState, trackFb])
 
   return (
-    <main className="bg-surface" id="top">
-      <Navbar onWhatsApp={() => openChat(defaultMessages.floating)} />
-      <Hero onWhatsApp={() => openChat(defaultMessages.floating)} />
+    <main className="bg-surface pb-28 lg:pb-0" id="top">
+      <Navbar onWhatsApp={(source) => openChat(defaultMessages.floating, source || 'navbar')} />
+      <Hero
+        onWhatsApp={(source) => openChat(defaultMessages.floating, source || 'hero')}
+        onViewProjects={trackViewProjects}
+      />
       <WhatWeDo />
       <Process />
       <ErrorBoundary
         fallback={
           <section id="proyectos" className="bg-white py-12 lg:py-16">
             <div className="container-app text-center">
-              <p className="text-xl font-semibold text-ink">No se pudo cargar la galería.</p>
-              <p className="mt-2 text-muted">Recarga la página o revisa tu conexión.</p>
+              <p className="text-xl font-semibold text-ink">No se pudo cargar la galerÃ­a.</p>
+              <p className="mt-2 text-muted">Recarga la pÃ¡gina o revisa tu conexiÃ³n.</p>
             </div>
           </section>
         }
@@ -155,9 +177,9 @@ function App() {
       </ErrorBoundary>
       <Guarantee />
       <Services />
-      <Contact />
+      <Contact onTrack={trackFb} />
       <Footer />
-      <WhatsAppFloat onClick={() => openChat(defaultMessages.floating)} />
+      <WhatsAppFloat onClick={() => openChat(defaultMessages.floating, 'float')} />
       <MobileQuickNav />
 
       <WhatsAppChatModal
@@ -165,6 +187,7 @@ function App() {
         initialMessage={chatMessage}
         onClose={() => setChatOpen(false)}
       />
+      <CookieBanner />
 
       <ErrorBoundary>
         <Lightbox
@@ -178,6 +201,7 @@ function App() {
         onClose={closeLightbox}
         onCopy={copyLink}
         copied={copied}
+        onTrack={trackFb}
       />
       </ErrorBoundary>
     </main>
@@ -185,4 +209,6 @@ function App() {
 }
 
 export default App
+
+
 

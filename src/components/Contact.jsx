@@ -8,9 +8,10 @@ import { MessageSquare, MapPin, Ruler, Camera } from "lucide-react"
 
 const infoIcons = [MapPin, Ruler, Camera]
 
-function Contact() {
+function Contact({ onTrack }) {
   const { form, errors, isSubmitting, handleChange, handleSubmit } = useContactForm({
     onSubmit: (message) => {
+      if (onTrack) onTrack('ContactForm', { action: 'send' })
       const url = waLink(message)
       window.open(url, "_blank", "noopener,noreferrer")
     },

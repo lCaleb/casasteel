@@ -11,7 +11,7 @@ const timelineCards = [
   { title: 'En pendiente', body: '2 a 3 meses' },
 ]
 
-function Hero({ onWhatsApp }) {
+function Hero({ onWhatsApp, onViewProjects }) {
   return (
     <section className="overflow-hidden bg-surface relative">
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-10">
@@ -77,10 +77,15 @@ function Hero({ onWhatsApp }) {
           </div>
           
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button onClick={onWhatsApp} className="w-full sm:w-auto px-6 py-3.5 text-base">
+            <Button onClick={() => onWhatsApp?.('hero-primary')} className="w-full sm:w-auto px-6 py-3.5 text-base">
               Cotizar por WhatsApp
             </Button>
-            <Button href="#proyectos" variant="ghost" className="w-full sm:w-auto text-brand">
+            <Button
+              href="#proyectos"
+              variant="ghost"
+              className="w-full sm:w-auto text-brand"
+              onClick={onViewProjects}
+            >
               Ver proyectos reales
             </Button>
           </div>

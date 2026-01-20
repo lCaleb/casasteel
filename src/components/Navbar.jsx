@@ -10,6 +10,7 @@ const links = [
   { href: '#garantia', label: 'Garantía' },
   { href: '#servicios', label: 'Servicios' },
   { href: '#contacto', label: 'Contacto' },
+  { href: '#terminos', label: 'Políticas' },
 ]
 
 function Navbar({ onWhatsApp }) {
@@ -27,7 +28,7 @@ function Navbar({ onWhatsApp }) {
             </div>
           </a>
         </div>
-        <nav className="hidden items-center gap-6 text-sm font-semibold text-ink lg:flex">
+        <nav className="hidden flex-1 flex-wrap items-center justify-end gap-5 text-sm font-semibold text-ink lg:flex">
           {links.map((link) => (
             <a key={link.href} href={link.href} className="transition hover:text-brand">
               {link.label}
@@ -35,7 +36,7 @@ function Navbar({ onWhatsApp }) {
           ))}
         </nav>
         <div className="hidden lg:block">
-          <Button onClick={onWhatsApp} className="px-5 py-3">
+          <Button onClick={() => onWhatsApp?.('navbar')} className="px-5 py-3">
             Cotizar por WhatsApp
           </Button>
         </div>

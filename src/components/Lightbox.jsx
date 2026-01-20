@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, MessageCircle, X } from 'lucide-react'
 import Button from './Button'
 import Modal from './Modal'
 import { useKeyboardNavigation } from '../hooks/useKeyboardNavigation'
 import { useImagePreload } from '../hooks/useImagePreload'
+import { waLink } from '../data/content'
 
 function Lightbox({
   isOpen,
@@ -17,6 +18,7 @@ function Lightbox({
   onClose,
   onCopy,
   copied,
+  onTrack,
 }) {
   const [displayImage, setDisplayImage] = useState(currentImage)
   const [slideDirection, setSlideDirection] = useState(null)
@@ -84,6 +86,13 @@ function Lightbox({
 
   const fallbackImg =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23f3f3ef'/%3E%3Ctext x='400' y='310' fill='%239aa1a6' font-size='18' text-anchor='middle'%3EImagen no disponible%3C/text%3E%3C/svg%3E"
+
+  const handleWhatsApp = () => {
+    const msg = displayImage ? `Hola, vi la imagen ${displayImage.id} (${displayImage.category}) y quiero cotizar.` : ''
+    const link = waLink(msg)
+    onTrack?.('ClickWhatsApp', { source: 'lightbox', cat: displayImage?.category, id: displayImage?.id })
+    window.open(link, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <AnimatePresence>
@@ -202,9 +211,17 @@ function Lightbox({
             {/* Barra de acciones */}
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <Button
+                variant="primary"
+                onClick={handleWhatsApp}
+                className="flex items-center gap-2 px-3 py-2 text-sm"
+              >
+                <MessageCircle size={16} />
+                Cotizar por WhatsApp
+              </Button>
+              <Button
                 variant="accent"
                 onClick={onCopy}
-                className="border border-line px-3 py-2 text-sm hover:border-acent"
+                className="border border-line px-3 py-2 text-sm hover:border-accent"
               >
                 {copied ? 'Copiado' : 'Copiar enlace'}
               </Button>

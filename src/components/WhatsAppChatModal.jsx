@@ -15,7 +15,7 @@ function WhatsAppChatModal({ isOpen, initialMessage, onClose }) {
 
   const handleSend = () => {
     const link = waLink(message || '')
-    window.open(link, '_blank')
+    window.open(link, '_blank', 'noopener,noreferrer')
   }
 
   return (

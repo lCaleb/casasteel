@@ -5,11 +5,12 @@ const mobileLinks = [
   { href: '#garantia', label: 'Garantía' },
   { href: '#servicios', label: 'Servicios' },
   { href: '#contacto', label: 'Contacto' },
+  { href: '#terminos', label: 'Políticas' },
 ]
 
 function MobileQuickNav() {
   return (
-    <nav className="fixed bottom-2 left-2 right-2 z-30 flex items-center gap-2 overflow-x-auto rounded-2xl border border-line/80 bg-white/92 px-2 py-2 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.45)] backdrop-blur lg:hidden">
+    <nav className="fixed bottom-4 left-1/2 z-30 flex w-[calc(100%-24px)] max-w-xl -translate-x-1/2 items-center gap-2 overflow-x-auto rounded-2xl border border-line/80 bg-white/95 px-2 py-2 shadow-[0_14px_36px_-18px_rgba(0,0,0,0.45)] backdrop-blur lg:hidden">
       <span className="shrink-0 rounded-xl bg-surface px-3 py-2 text-[10px] font-semibold text-muted">
         Desliza
       </span>
